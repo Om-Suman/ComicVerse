@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Browse Comics - ComicVerse Hub</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: #0a0a0a;
+        color: #fff;
+        line-height: 1.6;
+      }
+
+      /* Navigation */
+      nav {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d1b1b 100%);
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
+      }
+
+      .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 1.8rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #dc2626 0%, #3b82f6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-decoration: none;
+        letter-spacing: 1px;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+        align-items: center;
+      }
+
+      .nav-links a {
+        color: #fff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        position: relative;
+      }
+
+      .nav-links a:hover {
+        color: #dc2626;
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #dc2626;
+        transition: width 0.3s ease;
+      }
+
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+
+      .cart-btn {
+        position: relative;
+        background: #dc2626;
+        color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .cart-btn:hover {
+        background: #b91c1c;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+      }
+
+      .cart-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: #fbbf24;
+        color: #000;
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: bold;
+      }
+
+      /* Browse Container */
+      .browse-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 2rem;
+      }
+
+      .page-title {
+        font-size: 3rem;
+        margin-bottom: 2rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #fff 0%, #dc2626 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* Search and Filter Section */
+      .search-filter-section {
+        background: linear-gradient(145deg, #1a1a1a 0%, #2d1515 100%);
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(220, 38, 38, 0.2);
+        box-shadow: 0 4px 20px rgba(220, 38, 38, 0.1);
+      }
+
+      .search-bar {
+        position: relative;
+        margin-bottom: 1.5rem;
+      }
+
+      .search-bar input {
+        width: 100%;
+        padding: 1rem 1rem 1rem 3rem;
+        background: rgba(0, 0, 0, 0.4);
+        border: 2px solid rgba(220, 38, 38, 0.3);
+        border-radius: 8px;
+        color: white;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .search-bar input:focus {
+        outline: none;
+        border-color: #dc2626;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+      }
+
+      .search-bar input::placeholder {
+        color: #666;
+      }
+
+      .search-bar::before {
+        content: "🔍";
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.2rem;
+      }
+
+      .filter-toggle-btn {
+        background: rgba(220, 38, 38, 0.2);
+        color: white;
+        border: 2px solid rgba(220, 38, 38, 0.4);
+        padding: 0.8rem 1.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+      }
+
+      .filter-toggle-btn:hover {
+        background: rgba(220, 38, 38, 0.4);
+        border-color: #dc2626;
+        transform: translateY(-2px);
+      }
+
+      .filters-panel {
+        display: none;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(220, 38, 38, 0.2);
+        animation: slideDown 0.3s ease;
+      }
+
+      .filters-panel.active {
+        display: grid;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .filter-group label {
+        display: block;
+        color: #dc2626;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+      }
+
+      .filter-group select {
+        width: 100%;
+        padding: 0.7rem;
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(220, 38, 38, 0.3);
+        border-radius: 6px;
+        color: white;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .filter-group select:focus {
+        outline: none;
+        border-color: #dc2626;
+      }
+
+      .filter-group select:hover {
+        border-color: rgba(220, 38, 38, 0.6);
+      }
+
+      .filter-group select option {
+        background: #1a1a1a;
+        color: white;
+      }
+
+      .results-info {
+        color: #999;
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .clear-filters-btn {
+        background: transparent;
+        color: #dc2626;
+        border: 1px solid #dc2626;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .clear-filters-btn:hover {
+        background: #dc2626;
+        color: white;
+        transform: translateY(-2px);
+      }
+
+      /* Comic Grid */
+      .comic-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+      }
+
+      .comic-card {
+        background: linear-gradient(145deg, #1a1a1a 0%, #2d1515 100%);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 1px solid rgba(220, 38, 38, 0.1);
+      }
+
+      .comic-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 30px rgba(220, 38, 38, 0.3);
+        border-color: rgba(220, 38, 38, 0.5);
+      }
+
+      .comic-card-image {
+        position: relative;
+        overflow: hidden;
+        height: 350px;
+      }
+
+      .comic-card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+
+      .comic-card:hover .comic-card-image img {
+        transform: scale(1.1);
+      }
+
+      .comic-rating {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #fbbf24;
+        color: #000;
+        padding: 0.3rem 0.6rem;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 0.9rem;
+      }
+
+      .comic-card-content {
+        padding: 1.5rem;
+      }
+
+      .comic-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        color: #fff;
+      }
+
+      .comic-publisher {
+        color: #999;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+
+      .comic-price {
+        color: #dc2626;
+        font-size: 1.3rem;
+        font-weight: bold;
+      }
+
+      .no-results {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: linear-gradient(145deg, #1a1a1a 0%, #2d1515 100%);
+        border-radius: 12px;
+        border: 1px solid rgba(220, 38, 38, 0.2);
+      }
+
+      .no-results-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+      }
+
+      .no-results p {
+        color: #999;
+        font-size: 1.2rem;
+      }
+
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 2000;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .modal-content {
+        background: linear-gradient(145deg, #1a1a1a 0%, #2d1515 100%);
+        border-radius: 16px;
+        max-width: 900px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        margin: 2rem;
+        border: 2px solid rgba(220, 38, 38, 0.3);
+        box-shadow: 0 20px 60px rgba(220, 38, 38, 0.4);
+        animation: slideUp 0.3s ease;
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(220, 38, 38, 0.8);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 1.5rem;
+        transition: all 0.3s ease;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-close:hover {
+        background: #dc2626;
+        transform: rotate(90deg);
+      }
+
+      .modal-body {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        padding: 2rem;
+      }
+
+      .modal-image {
+        position: relative;
+        overflow: hidden;
+        border-radius: 12px;
+      }
+
+      .modal-image img {
+        width: 100%;
+        height: auto;
+        transition: transform 0.5s ease;
+        display: block;
+      }
+
+      .modal-image:hover img {
+        transform: scale(1.1);
+      }
+
+      .modal-details {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .modal-details h2 {
+        font-size: 2.5rem;
+        color: #fff;
+        line-height: 1.2;
+      }
+
+      .modal-meta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .meta-badge {
+        background: rgba(220, 38, 38, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        border: 1px solid rgba(220, 38, 38, 0.3);
+      }
+
+      .modal-price {
+        font-size: 2.5rem;
+        color: #dc2626;
+        font-weight: bold;
+      }
+
+      .add-cart-btn {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+      }
+
+      .add-cart-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
+      }
+
+      .info-box {
+        background: rgba(0, 0, 0, 0.4);
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px solid rgba(220, 38, 38, 0.2);
+      }
+
+      .info-box h3 {
+        font-size: 1.3rem;
+        margin-bottom: 0.8rem;
+        color: #dc2626;
+      }
+
+      .info-box p {
+        color: #ccc;
+        line-height: 1.8;
+      }
+
+      /* Success Notification */
+      .notification {
+        position: fixed;
+        top: 100px;
+        right: 2rem;
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        box-shadow: 0 8px 20px rgba(5, 150, 105, 0.4);
+        z-index: 3000;
+        animation: slideInRight 0.3s ease;
+        display: none;
+        font-weight: 600;
+      }
+
+      .notification.show {
+        display: block;
+      }
+
+      @keyframes slideInRight {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      /* Footer */
+      footer {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d1b1b 100%);
+        padding: 3rem 2rem;
+        text-align: center;
+        margin-top: 4rem;
+        border-top: 2px solid rgba(220, 38, 38, 0.3);
+      }
+
+      footer p {
+        color: #999;
+        margin: 0.5rem 0;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .comic-grid {
+          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+          gap: 1rem;
+        }
+
+        .modal-body {
+          grid-template-columns: 1fr;
+        }
+
+        .filters-panel {
+          grid-template-columns: 1fr;
+        }
+
+        .page-title {
+          font-size: 2rem;
+        }
+
+        .modal-details h2 {
+          font-size: 1.8rem;
+        }
+
+        .results-info {
+          flex-direction: column;
+          gap: 1rem;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav>
+      <div class="nav-container">
+        <a href="index.html" class="logo">ComicVerse</a>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="browse.html">Browse</a></li>
+          <li>
+            <button class="cart-btn" onclick="window.location.href='cart.html'">
+              🛒 Cart
+              <span class="cart-badge" id="cartBadge">0</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Browse Container -->
+    <div class="browse-container">
+      <h1 class="page-title">Browse All Comics</h1>
+
+      <!-- Search and Filters -->
+      <div class="search-filter-section">
+        <div class="search-bar">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search by title or character..."
+          />
+        </div>
+
+        <button class="filter-toggle-btn" onclick="toggleFilters()">
+          🎯 Filters & Sorting
+        </button>
+
+        <div class="filters-panel" id="filtersPanel">
+          <div class="filter-group">
+            <label for="publisherFilter">Publisher</label>
+            <select id="publisherFilter">
+              <option value="all">All Publishers</option>
+              <option value="Marvel">Marvel</option>
+              <option value="DC">DC</option>
+              <option value="Image">Image</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="genreFilter">Genre</label>
+            <select id="genreFilter">
+              <option value="all">All Genres</option>
+              <option value="Superhero">Superhero</option>
+              <option value="Horror">Horror</option>
+              <option value="Sci-Fi">Sci-Fi</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="sortBy">Sort By</label>
+            <select id="sortBy">
+              <option value="title">Title (A-Z)</option>
+              <option value="price-low">Price (Low to High)</option>
+              <option value="price-high">Price (High to Low)</option>
+              <option value="date">Release Date (Newest)</option>
+              <option value="rating">Rating (Highest)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Info -->
+      <div class="results-info">
+        <span id="resultsCount">Showing 0 comics</span>
+        <button class="clear-filters-btn" onclick="clearFilters()">
+          Clear All Filters
+        </button>
+      </div>
+
+      <!-- Comic Grid -->
+      <div class="comic-grid" id="comicGrid"></div>
+
+      <!-- No Results -->
+      <div class="no-results" id="noResults" style="display: none">
+        <div class="no-results-icon">📚</div>
+        <p>No comics found matching your criteria</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2024 ComicVerse Hub. All rights reserved.</p>
+      <p>A portfolio project showcasing modern web development</p>
+    </footer>
+
+    <!-- Success Notification -->
+    <div class="notification" id="notification">
+      ✓ Added to cart successfully!
+    </div>
+
+    <script src="comics-data.js"></script>
+    <script>
+      let currentFilters = {
+        search: "",
+        publisher: "all",
+        genre: "all",
+        sort: "title",
+      };
+
+      // Initialize on page load
+      window.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const publisher = urlParams.get("publisher");
+
+        if (publisher) {
+          document.getElementById("publisherFilter").value = publisher;
+          currentFilters.publisher = publisher;
+        }
+
+        loadComics();
+        updateCartBadge();
+        setupEventListeners();
+      });
+
+      function setupEventListeners() {
+        document
+          .getElementById("searchInput")
+          .addEventListener("input", (e) => {
+            currentFilters.search = e.target.value.toLowerCase();
+            loadComics();
+          });
+
+        document
+          .getElementById("publisherFilter")
+          .addEventListener("change", (e) => {
+            currentFilters.publisher = e.target.value;
+            loadComics();
+          });
+
+        document
+          .getElementById("genreFilter")
+          .addEventListener("change", (e) => {
+            currentFilters.genre = e.target.value;
+            loadComics();
+          });
+
+        document.getElementById("sortBy").addEventListener("change", (e) => {
+          currentFilters.sort = e.target.value;
+          loadComics();
+        });
+      }
+
+      function toggleFilters() {
+        document.getElementById("filtersPanel").classList.toggle("active");
+      }
+
+      function clearFilters() {
+        currentFilters = {
+          search: "",
+          publisher: "all",
+          genre: "all",
+          sort: "title",
+        };
+
+        document.getElementById("searchInput").value = "";
+        document.getElementById("publisherFilter").value = "all";
+        document.getElementById("genreFilter").value = "all";
+        document.getElementById("sortBy").value = "title";
+
+        loadComics();
+      }
+
+      function loadComics() {
+        let filtered = comicsData.filter((comic) => {
+          const matchesSearch =
+            comic.title.toLowerCase().includes(currentFilters.search) ||
+            comic.character.toLowerCase().includes(currentFilters.search);
+          const matchesPublisher =
+            currentFilters.publisher === "all" ||
+            comic.publisher === currentFilters.publisher;
+          const matchesGenre =
+            currentFilters.genre === "all" ||
+            comic.genre === currentFilters.genre;
+
+          return matchesSearch && matchesPublisher && matchesGenre;
+        });
+
+        // Sort
+        filtered.sort((a, b) => {
+          switch (currentFilters.sort) {
+            case "price-low":
+              return a.price - b.price;
+            case "price-high":
+              return b.price - a.price;
+            case "date":
+              return new Date(b.releaseDate) - new Date(a.releaseDate);
+            case "rating":
+              return b.rating - a.rating;
+            default:
+              return a.title.localeCompare(b.title);
+          }
+        });
+
+        displayComics(filtered);
+      }
+
+      function displayComics(comics) {
+        const grid = document.getElementById("comicGrid");
+        const noResults = document.getElementById("noResults");
+        const resultsCount = document.getElementById("resultsCount");
+
+        grid.innerHTML = "";
+        resultsCount.textContent = `Showing ${comics.length} comic${
+          comics.length !== 1 ? "s" : ""
+        }`;
+
+        if (comics.length === 0) {
+          grid.style.display = "none";
+          noResults.style.display = "block";
+        } else {
+          grid.style.display = "grid";
+          noResults.style.display = "none";
+
+          comics.forEach((comic) => {
+            grid.appendChild(createComicCard(comic));
+          });
+        }
+      }
+
+      function createComicCard(comic) {
+        const card = document.createElement("div");
+        card.className = "comic-card";
+        card.onclick = () =>
+          (window.location.href = `comic-detail.html?id=${comic.id}`);
+
+        card.innerHTML = `
+                <div class="comic-card-image">
+                    <img src="${comic.cover}" alt="${comic.title}">
+                    <div class="comic-rating">⭐ ${comic.rating}</div>
+                </div>
+                <div class="comic-card-content">
+                    <h3>${comic.title}</h3>
+                    <p class="comic-publisher">${comic.publisher}</p>
+                    <p class="comic-price">${comic.price}</p>
+                </div>
+            `;
+
+        return card;
+      }
+
+      // Cart functionality
+      function getCart() {
+        return JSON.parse(localStorage.getItem("cart") || "[]");
+      }
+
+      function saveCart(cart) {
+        localStorage.setItem("cart", JSON.stringify(cart));
+        updateCartBadge();
+      }
+
+      function updateCartBadge() {
+        const cart = getCart();
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        document.getElementById("cartBadge").textContent = totalItems;
+      }
+
+      function showNotification() {
+        const notification = document.getElementById("notification");
+        notification.classList.add("show");
+        setTimeout(() => {
+          notification.classList.remove("show");
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ComicVerse Hub - Home</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: #0a0a0a;
+        color: #fff;
+        line-height: 1.6;
+      }
+
+      /* Navigation */
+      nav {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d1b1b 100%);
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
+      }
+
+      .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 1.8rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #dc2626 0%, #3b82f6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-decoration: none;
+        letter-spacing: 1px;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+        align-items: center;
+      }
+
+      .nav-links a {
+        color: #fff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        position: relative;
+      }
+
+      .nav-links a:hover {
+        color: #dc2626;
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #dc2626;
+        transition: width 0.3s ease;
+      }
+
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+
+      .cart-btn {
+        position: relative;
+        background: #dc2626;
+        color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .cart-btn:hover {
+        background: #b91c1c;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+      }
+
+      .cart-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: #fbbf24;
+        color: #000;
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: bold;
+      }
+
+      /* Hero Carousel */
+      .hero-carousel {
+        position: relative;
+        height: 600px;
+        overflow: hidden;
+        background: #000;
+      }
+
+      .carousel-slide {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+      }
+
+      .carousel-slide.active {
+        opacity: 1;
+      }
+
+      .carousel-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .carousel-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.9) 0%,
+          rgba(0, 0, 0, 0.4) 50%,
+          transparent 100%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 4rem;
+      }
+
+      .carousel-content {
+        max-width: 800px;
+        z-index: 10;
+        text-align: center;
+      }
+
+      .featured-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.8;
+          transform: scale(1.05);
+        }
+      }
+
+      .carousel-content h2 {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        font-weight: 900;
+        line-height: 1.1;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+        animation: slideInLeft 0.8s ease;
+      }
+
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .carousel-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .meta-item {
+        background: rgba(0, 0, 0, 0.6);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(220, 38, 38, 0.3);
+      }
+
+      .carousel-content p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        color: #e5e5e5;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+        line-height: 1.6;
+        animation: slideInLeft 0.8s ease 0.2s backwards;
+      }
+
+      .carousel-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        animation: slideInLeft 0.8s ease 0.4s backwards;
+        justify-content: center;
+      }
+
+      .cta-button {
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .cta-button.primary {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+      }
+
+      .cta-button.primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(220, 38, 38, 0.6);
+      }
+
+      .cta-button.secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .cta-button.secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-3px);
+      }
+
+      .carousel-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        border: 2px solid rgba(220, 38, 38, 0.5);
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 2rem;
+        transition: all 0.3s ease;
+        z-index: 20;
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .carousel-arrow:hover {
+        background: rgba(220, 38, 38, 0.9);
+        transform: translateY(-50%) scale(1.15);
+        border-color: #dc2626;
+        box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
+      }
+
+      .carousel-arrow:active {
+        transform: translateY(-50%) scale(1.05);
+      }
+
+      .carousel-arrow.left {
+        left: 3rem;
+      }
+
+      .carousel-arrow.right {
+        right: 3rem;
+      }
+
+      /* Carousel Indicators */
+      .carousel-indicators {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 0.8rem;
+        z-index: 20;
+      }
+
+      .indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        padding: 0;
+      }
+
+      .indicator:hover {
+        background: rgba(255, 255, 255, 0.7);
+        transform: scale(1.2);
+      }
+
+      .indicator.active {
+        background: #dc2626;
+        border-color: #dc2626;
+        width: 40px;
+        border-radius: 6px;
+      }
+
+      /* Sections */
+      .section {
+        max-width: 1200px;
+        margin: 4rem auto;
+        padding: 0 2rem;
+      }
+
+      .section-title {
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #fff 0%, #dc2626 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .comic-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 2rem;
+      }
+
+      .comic-card {
+        background: linear-gradient(145deg, #1a1a1a 0%, #2d1515 100%);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 1px solid rgba(220, 38, 38, 0.1);
+      }
+
+      .comic-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 30px rgba(220, 38, 38, 0.3);
+        border-color: rgba(220, 38, 38, 0.5);
+      }
+
+      .comic-card-image {
+        position: relative;
+        overflow: hidden;
+        height: 350px;
+      }
+
+      .comic-card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+
+      .comic-card:hover .comic-card-image img {
+        transform: scale(1.1);
+      }
+
+      .comic-rating {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #fbbf24;
+        color: #000;
+        padding: 0.3rem 0.6rem;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+
+      .comic-card-content {
+        padding: 1.5rem;
+      }
+
+      .comic-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        color: #fff;
+      }
+
+      .comic-publisher {
+        color: #999;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+
+      .comic-price {
+        color: #dc2626;
+        font-size: 1.3rem;
+        font-weight: bold;
+      }
+
+      /* Publisher Spotlights */
+      .publisher-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+      }
+
+      .publisher-card {
+        background: linear-gradient(135deg, #7f1d1d 0%, #1e3a8a 100%);
+        padding: 3rem;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        border: 2px solid transparent;
+      }
+
+      .publisher-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(220, 38, 38, 0.5);
+        border-color: #dc2626;
+      }
+
+      .publisher-card h3 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      /* Footer */
+      footer {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d1b1b 100%);
+        padding: 3rem 2rem;
+        text-align: center;
+        margin-top: 4rem;
+        border-top: 2px solid rgba(220, 38, 38, 0.3);
+      }
+
+      footer p {
+        color: #999;
+        margin: 0.5rem 0;
+      }
+
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 2000;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .modal-content {
+        background: linear-gradient(145deg, #1a1a1a 0%, #2d1515 100%);
+        border-radius: 16px;
+        max-width: 900px;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        margin: 2rem;
+        border: 2px solid rgba(220, 38, 38, 0.3);
+        box-shadow: 0 20px 60px rgba(220, 38, 38, 0.4);
+        animation: slideUp 0.3s ease;
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(220, 38, 38, 0.8);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 1.5rem;
+        transition: all 0.3s ease;
+        z-index: 10;
+      }
+
+      .modal-close:hover {
+        background: #dc2626;
+        transform: rotate(90deg);
+      }
+
+      .modal-body {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        padding: 2rem;
+      }
+
+      .modal-image {
+        position: relative;
+        overflow: hidden;
+        border-radius: 12px;
+      }
+
+      .modal-image img {
+        width: 100%;
+        height: auto;
+        transition: transform 0.5s ease;
+      }
+
+      .modal-image:hover img {
+        transform: scale(1.1);
+      }
+
+      .modal-details {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .modal-details h2 {
+        font-size: 2.5rem;
+        color: #fff;
+      }
+
+      .modal-meta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .meta-badge {
+        background: rgba(220, 38, 38, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        border: 1px solid rgba(220, 38, 38, 0.3);
+      }
+
+      .modal-price {
+        font-size: 2.5rem;
+        color: #dc2626;
+        font-weight: bold;
+      }
+
+      .add-cart-btn {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+      }
+
+      .add-cart-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
+      }
+
+      .info-box {
+        background: rgba(0, 0, 0, 0.4);
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px solid rgba(220, 38, 38, 0.2);
+      }
+
+      .info-box h3 {
+        font-size: 1.3rem;
+        margin-bottom: 0.8rem;
+        color: #dc2626;
+      }
+
+      .info-box p {
+        color: #ccc;
+        line-height: 1.8;
+      }
+
+      /* Success Notification */
+      .notification {
+        position: fixed;
+        top: 100px;
+        right: 2rem;
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        box-shadow: 0 8px 20px rgba(5, 150, 105, 0.4);
+        z-index: 3000;
+        animation: slideInRight 0.3s ease;
+        display: none;
+      }
+
+      .notification.show {
+        display: block;
+      }
+
+      @keyframes slideInRight {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .nav-links {
+          gap: 1rem;
+        }
+
+        .carousel-content h2 {
+          font-size: 2rem;
+        }
+
+        .carousel-content p {
+          font-size: 1rem;
+        }
+
+        .modal-body {
+          grid-template-columns: 1fr;
+        }
+
+        .comic-grid {
+          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+          gap: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav>
+      <div class="nav-container">
+        <a href="index.html" class="logo">ComicVerse</a>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="browse.html">Browse</a></li>
+          <li>
+            <button class="cart-btn" onclick="window.location.href='cart.html'">
+              🛒 Cart
+              <span class="cart-badge" id="cartBadge">0</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Hero Carousel -->
+    <div class="hero-carousel">
+      <div class="carousel-slide active">
+        <img
+          src="https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?w=1920&h=600&fit=crop"
+          alt="Spider-Man"
+        />
+        <div class="carousel-overlay">
+          <div class="carousel-content">
+            <div class="featured-badge">FEATURED</div>
+            <h2>Spider-Man: Web of Shadows</h2>
+            <div class="carousel-meta">
+              <span class="meta-item">⭐ 4.8</span>
+              <span class="meta-item">Marvel</span>
+              <span class="meta-item">$4.99</span>
+            </div>
+            <p>
+              When darkness falls over New York City, Spider-Man must confront
+              his greatest fears and make an impossible choice that will
+              determine the fate of millions.
+            </p>
+            <div class="carousel-buttons">
+              <a href="comic-detail.html?id=001" class="cta-button primary">
+                <span>📖</span> Read More
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-slide">
+        <img
+          src="https://images.unsplash.com/photo-1608889476561-6242cfdbf622?w=1920&h=600&fit=crop"
+          alt="Batman"
+        />
+        <div class="carousel-overlay">
+          <div class="carousel-content">
+            <div class="featured-badge">FEATURED</div>
+            <h2>Batman: Dark Knight Returns</h2>
+            <div class="carousel-meta">
+              <span class="meta-item">⭐ 4.9</span>
+              <span class="meta-item">DC</span>
+              <span class="meta-item">$5.99</span>
+            </div>
+            <p>
+              In a dystopian future, an aging Batman comes out of retirement to
+              save Gotham City one last time from a new generation of criminals.
+            </p>
+            <div class="carousel-buttons">
+              <a href="comic-detail.html?id=002" class="cta-button primary">
+                <span>📖</span> Read More
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-slide">
+        <img
+          src="https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1920&h=600&fit=crop"
+          alt="Walking Dead"
+        />
+        <div class="carousel-overlay">
+          <div class="carousel-content">
+            <div class="featured-badge">FEATURED</div>
+            <h2>The Walking Dead: New Beginning</h2>
+            <div class="carousel-meta">
+              <span class="meta-item">⭐ 4.6</span>
+              <span class="meta-item">Image</span>
+              <span class="meta-item">$3.99</span>
+            </div>
+            <p>
+              Years after the outbreak, survivors attempt to rebuild
+              civilization while facing threats both living and dead.
+            </p>
+            <div class="carousel-buttons">
+              <a href="comic-detail.html?id=003" class="cta-button primary">
+                <span>📖</span> Read More
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-arrow left" onclick="changeSlide(-1)">‹</button>
+      <button class="carousel-arrow right" onclick="changeSlide(1)">›</button>
+
+      <!-- Carousel Indicators -->
+      <div class="carousel-indicators">
+        <button class="indicator active" onclick="goToSlide(0)"></button>
+        <button class="indicator" onclick="goToSlide(1)"></button>
+        <button class="indicator" onclick="goToSlide(2)"></button>
+      </div>
+    </div>
+
+    <!-- New Releases Section -->
+    <section class="section">
+      <h2 class="section-title">New Releases</h2>
+      <div class="comic-grid" id="newReleases"></div>
+    </section>
+
+    <!-- Popular Series Section -->
+    <section
+      class="section"
+      style="
+        background: rgba(220, 38, 38, 0.05);
+        padding: 3rem 2rem;
+        border-radius: 12px;
+      "
+    >
+      <h2 class="section-title">Popular Series</h2>
+      <div class="comic-grid" id="popularSeries"></div>
+    </section>
+
+    <!-- Publisher Spotlights -->
+    <section class="section">
+      <h2 class="section-title">Publisher Spotlights</h2>
+      <div class="publisher-grid">
+        <div
+          class="publisher-card"
+          onclick="window.location.href='browse.html?publisher=Marvel'"
+        >
+          <h3>Marvel</h3>
+          <p>Explore Marvel comics</p>
+        </div>
+        <div
+          class="publisher-card"
+          onclick="window.location.href='browse.html?publisher=DC'"
+        >
+          <h3>DC</h3>
+          <p>Explore DC comics</p>
+        </div>
+        <div
+          class="publisher-card"
+          onclick="window.location.href='browse.html?publisher=Image'"
+        >
+          <h3>Image</h3>
+          <p>Explore Image comics</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2024 ComicVerse Hub. All rights reserved.</p>
+      <p>A portfolio project showcasing modern web development</p>
+    </footer>
+
+    <!-- Success Notification -->
+    <div class="notification" id="notification">
+      ✓ Added to cart successfully!
+    </div>
+
+    <script src="comics-data.js"></script>
+    <script>
+      // Carousel functionality
+      let currentSlide = 0;
+      const slides = document.querySelectorAll(".carousel-slide");
+      const indicators = document.querySelectorAll(".indicator");
+      let autoPlayTimer;
+      let progressAnimation;
+
+      function changeSlide(direction) {
+        slides[currentSlide].classList.remove("active");
+        indicators[currentSlide].classList.remove("active");
+
+        currentSlide =
+          (currentSlide + direction + slides.length) % slides.length;
+
+        slides[currentSlide].classList.add("active");
+        indicators[currentSlide].classList.add("active");
+
+        resetAutoPlay();
+        resetProgress();
+      }
+
+      function goToSlide(index) {
+        slides[currentSlide].classList.remove("active");
+        indicators[currentSlide].classList.remove("active");
+
+        currentSlide = index;
+
+        slides[currentSlide].classList.add("active");
+        indicators[currentSlide].classList.add("active");
+
+        resetAutoPlay();
+        resetProgress();
+      }
+
+      function resetAutoPlay() {
+        clearInterval(autoPlayTimer);
+        autoPlayTimer = setInterval(() => changeSlide(1), 5000);
+      }
+
+      function resetProgress() {
+        // Progress bar removed - no longer needed
+      }
+
+      // Initialize auto advance carousel
+      autoPlayTimer = setInterval(() => changeSlide(1), 5000);
+
+      // Pause on hover
+      document
+        .querySelector(".hero-carousel")
+        .addEventListener("mouseenter", () => {
+          clearInterval(autoPlayTimer);
+        });
+
+      document
+        .querySelector(".hero-carousel")
+        .addEventListener("mouseleave", () => {
+          resetAutoPlay();
+        });
+
+      // Load comics data
+      function loadComics() {
+        const newReleasesContainer = document.getElementById("newReleases");
+        const popularSeriesContainer = document.getElementById("popularSeries");
+
+        comicsData.slice(0, 4).forEach((comic) => {
+          newReleasesContainer.appendChild(createComicCard(comic));
+        });
+
+        comicsData.slice(4, 8).forEach((comic) => {
+          popularSeriesContainer.appendChild(createComicCard(comic));
+        });
+      }
+
+      function createComicCard(comic) {
+        const card = document.createElement("div");
+        card.className = "comic-card";
+        card.onclick = () =>
+          (window.location.href = `comic-detail.html?id=${comic.id}`);
+
+        card.innerHTML = `
+                <div class="comic-card-image">
+                    <img src="${comic.cover}" alt="${comic.title}">
+                    <div class="comic-rating">⭐ ${comic.rating}</div>
+                </div>
+                <div class="comic-card-content">
+                    <h3>${comic.title}</h3>
+                    <p class="comic-publisher">${comic.publisher}</p>
+                    <p class="comic-price">${comic.price}</p>
+                </div>
+            `;
+
+        return card;
+      }
+
+      // Cart functionality
+      function getCart() {
+        return JSON.parse(localStorage.getItem("cart") || "[]");
+      }
+
+      function saveCart(cart) {
+        localStorage.setItem("cart", JSON.stringify(cart));
+        updateCartBadge();
+      }
+
+      function addToCart(comicId) {
+        const comic = comicsData.find((c) => c.id === comicId);
+        if (!comic) return;
+
+        let cart = getCart();
+        const existingItem = cart.find((item) => item.id === comicId);
+
+        if (existingItem) {
+          existingItem.quantity += 1;
+        } else {
+          cart.push({ ...comic, quantity: 1 });
+        }
+
+        saveCart(cart);
+        showNotification();
+      }
+
+      function updateCartBadge() {
+        const cart = getCart();
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        document.getElementById("cartBadge").textContent = totalItems;
+      }
+
+      function showNotification() {
+        const notification = document.getElementById("notification");
+        notification.classList.add("show");
+        setTimeout(() => {
+          notification.classList.remove("show");
+        }, 3000);
+      }
+
+      // Initialize
+      loadComics();
+      updateCartBadge();
+    </script>
+  </body>
+</html>
