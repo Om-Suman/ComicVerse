@@ -1,122 +1,14 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ComicVerse Hub - Home</title>
+    <link rel="stylesheet" href="styles.css" />
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+      /* PAGE-SPECIFIC CSS ONLY */
 
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Oxygen, Ubuntu, Cantarell, sans-serif;
-        background: #0a0a0a;
-        color: #fff;
-        line-height: 1.6;
-      }
-
-      /* Navigation */
-      nav {
-        background: linear-gradient(135deg, #1a1a1a 0%, #2d1b1b 100%);
-        padding: 1rem 2rem;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
-      }
-
-      .nav-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .logo {
-        font-size: 1.8rem;
-        font-weight: 900;
-        background: linear-gradient(135deg, #dc2626 0%, #3b82f6 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-decoration: none;
-        letter-spacing: 1px;
-      }
-
-      .nav-links {
-        display: flex;
-        gap: 2rem;
-        list-style: none;
-        align-items: center;
-      }
-
-      .nav-links a {
-        color: #fff;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        font-weight: 500;
-        position: relative;
-      }
-
-      .nav-links a:hover {
-        color: #dc2626;
-      }
-
-      .nav-links a::after {
-        content: "";
-        position: absolute;
-        bottom: -5px;
-        left: 0;
-        width: 0;
-        height: 2px;
-        background: #dc2626;
-        transition: width 0.3s ease;
-      }
-
-      .nav-links a:hover::after {
-        width: 100%;
-      }
-
-      .cart-btn {
-        position: relative;
-        background: #dc2626;
-        color: white;
-        border: none;
-        padding: 0.6rem 1.2rem;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.3s ease;
-      }
-
-      .cart-btn:hover {
-        background: #b91c1c;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
-      }
-
-      .cart-badge {
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        background: #fbbf24;
-        color: #000;
-        border-radius: 50%;
-        width: 22px;
-        height: 22px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.75rem;
-        font-weight: bold;
-      }
-
-      /* Hero Carousel */
+      /* Carousel Additions */
       .hero-carousel {
         position: relative;
         height: 600px;
@@ -124,24 +16,40 @@
         background: #000;
       }
 
+      .hero-glow {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        background: radial-gradient(
+          circle 400px at var(--mouse-x, 50%) var(--mouse-y, 50%),
+          rgba(220, 38, 38, 0.15),
+          transparent 80%
+        );
+        z-index: 5;
+      }
+
       .carousel-slide {
         position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
         opacity: 0;
-        transition: opacity 1s ease-in-out;
+        z-index: 1;
+        transition: opacity 0.8s ease-in-out;
       }
-
       .carousel-slide.active {
         opacity: 1;
+        z-index: 2;
       }
-
       .carousel-slide img {
         width: 100%;
         height: 100%;
         object-fit: cover;
       }
-
       .carousel-overlay {
         position: absolute;
         top: 0;
@@ -158,39 +66,28 @@
         align-items: center;
         justify-content: center;
         padding: 0 4rem;
+        z-index: 10;
       }
-
       .carousel-content {
         max-width: 800px;
-        z-index: 10;
         text-align: center;
       }
-
       .featured-badge {
         display: inline-block;
-        background: linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%);
+        background: linear-gradient(
+          135deg,
+          var(--clr-primary) 0%,
+          var(--clr-primary-darkest) 100%
+        );
         color: white;
         padding: 0.4rem 1rem;
-        border-radius: 20px;
+        border-radius: var(--radius-pill);
         font-size: 0.8rem;
         font-weight: 700;
         letter-spacing: 1px;
         margin-bottom: 1rem;
         animation: pulse 2s ease-in-out infinite;
       }
-
-      @keyframes pulse {
-        0%,
-        100% {
-          opacity: 1;
-          transform: scale(1);
-        }
-        50% {
-          opacity: 0.8;
-          transform: scale(1.05);
-        }
-      }
-
       .carousel-content h2 {
         font-size: 3.5rem;
         margin-bottom: 1rem;
@@ -199,18 +96,6 @@
         text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
         animation: slideInLeft 0.8s ease;
       }
-
-      @keyframes slideInLeft {
-        from {
-          opacity: 0;
-          transform: translateX(-50px);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
-
       .carousel-meta {
         display: flex;
         gap: 1rem;
@@ -218,17 +103,15 @@
         flex-wrap: wrap;
         justify-content: center;
       }
-
-      .meta-item {
+      .carousel-meta .meta-item {
         background: rgba(0, 0, 0, 0.6);
         padding: 0.5rem 1rem;
-        border-radius: 6px;
+        border-radius: var(--radius-sm);
         font-size: 0.9rem;
         font-weight: 600;
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(220, 38, 38, 0.3);
+        border: 1px solid var(--clr-primary-border);
       }
-
       .carousel-content p {
         font-size: 1.2rem;
         margin-bottom: 2rem;
@@ -237,7 +120,6 @@
         line-height: 1.6;
         animation: slideInLeft 0.8s ease 0.2s backwards;
       }
-
       .carousel-buttons {
         display: flex;
         gap: 1rem;
@@ -245,52 +127,13 @@
         animation: slideInLeft 0.8s ease 0.4s backwards;
         justify-content: center;
       }
-
-      .cta-button {
-        border: none;
-        padding: 1rem 2rem;
-        border-radius: 8px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      .cta-button.primary {
-        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-        color: white;
-        box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
-      }
-
-      .cta-button.primary:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(220, 38, 38, 0.6);
-      }
-
-      .cta-button.secondary {
-        background: rgba(255, 255, 255, 0.1);
-        color: white;
-        backdrop-filter: blur(10px);
-        border: 2px solid rgba(255, 255, 255, 0.3);
-      }
-
-      .cta-button.secondary:hover {
-        background: rgba(255, 255, 255, 0.2);
-        border-color: rgba(255, 255, 255, 0.5);
-        transform: translateY(-3px);
-      }
-
       .carousel-arrow {
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
         background: rgba(0, 0, 0, 0.7);
         color: white;
-        border: 2px solid rgba(220, 38, 38, 0.5);
+        border: 2px solid var(--clr-primary-border);
         width: 60px;
         height: 60px;
         border-radius: 50%;
@@ -303,27 +146,19 @@
         align-items: center;
         justify-content: center;
       }
-
       .carousel-arrow:hover {
         background: rgba(220, 38, 38, 0.9);
         transform: translateY(-50%) scale(1.15);
-        border-color: #dc2626;
-        box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
+        border-color: var(--clr-primary);
+        box-shadow: 0 0 20px var(--clr-primary-glow);
       }
-
-      .carousel-arrow:active {
-        transform: translateY(-50%) scale(1.05);
-      }
-
       .carousel-arrow.left {
         left: 3rem;
       }
-
       .carousel-arrow.right {
         right: 3rem;
       }
 
-      /* Carousel Indicators */
       .carousel-indicators {
         position: absolute;
         bottom: 2rem;
@@ -333,7 +168,6 @@
         gap: 0.8rem;
         z-index: 20;
       }
-
       .indicator {
         width: 12px;
         height: 12px;
@@ -344,395 +178,222 @@
         transition: all 0.3s ease;
         padding: 0;
       }
-
-      .indicator:hover {
-        background: rgba(255, 255, 255, 0.7);
-        transform: scale(1.2);
-      }
-
       .indicator.active {
-        background: #dc2626;
-        border-color: #dc2626;
+        background: var(--clr-primary);
+        border-color: var(--clr-primary);
         width: 40px;
-        border-radius: 6px;
+        border-radius: var(--radius-sm);
+      }
+      .carousel-progress-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 4px;
+        background: var(--clr-primary);
+        width: 0%;
+        z-index: 20;
+      }
+      @media (max-width: 768px) {
+        .carousel-content h2 {
+          font-size: 2rem;
+        }
+        .carousel-content p {
+          font-size: 1rem;
+        }
+        .carousel-arrow {
+          display: none;
+        }
       }
 
-      /* Sections */
-      .section {
-        max-width: 1200px;
-        margin: 4rem auto;
-        padding: 0 2rem;
-      }
-
-      .section-title {
-        font-size: 2.5rem;
-        margin-bottom: 2rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #fff 0%, #dc2626 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-
-      .comic-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      /* Stats Section */
+      .stats-section {
+        display: flex;
+        justify-content: space-around;
+        background: linear-gradient(
+          145deg,
+          var(--bg-surface) 0%,
+          var(--bg-surface-end) 100%
+        );
+        padding: 3rem;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--clr-primary-faint);
+        box-shadow: 0 10px 30px rgba(220, 38, 38, 0.05);
+        flex-wrap: wrap;
         gap: 2rem;
       }
-
-      .comic-card {
-        background: linear-gradient(145deg, #1a1a1a 0%, #2d1515 100%);
-        border-radius: 12px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        border: 1px solid rgba(220, 38, 38, 0.1);
+      .stat-card {
+        text-align: center;
       }
-
-      .comic-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 12px 30px rgba(220, 38, 38, 0.3);
-        border-color: rgba(220, 38, 38, 0.5);
+      .stat-number {
+        font-size: 3.5rem;
+        font-weight: 900;
+        color: var(--clr-primary);
+        text-shadow: 0 0 15px rgba(220, 38, 38, 0.4);
       }
-
-      .comic-card-image {
-        position: relative;
-        overflow: hidden;
-        height: 350px;
-      }
-
-      .comic-card-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-      }
-
-      .comic-card:hover .comic-card-image img {
-        transform: scale(1.1);
-      }
-
-      .comic-rating {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: #fbbf24;
-        color: #000;
-        padding: 0.3rem 0.6rem;
-        border-radius: 6px;
-        font-weight: bold;
-        font-size: 0.9rem;
-        display: flex;
-        align-items: center;
-        gap: 0.3rem;
-      }
-
-      .comic-card-content {
-        padding: 1.5rem;
-      }
-
-      .comic-card h3 {
+      .stat-label {
         font-size: 1.2rem;
-        margin-bottom: 0.5rem;
-        color: #fff;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 2px;
       }
 
-      .comic-publisher {
-        color: #999;
-        font-size: 0.9rem;
-        margin-bottom: 1rem;
-      }
-
-      .comic-price {
-        color: #dc2626;
-        font-size: 1.3rem;
-        font-weight: bold;
-      }
-
-      /* Publisher Spotlights */
+      /* Publisher Spotlights Enhanced */
       .publisher-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 2rem;
       }
-
       .publisher-card {
-        background: linear-gradient(135deg, #7f1d1d 0%, #1e3a8a 100%);
+        background: var(--bg-surface);
         padding: 3rem;
-        border-radius: 12px;
+        border-radius: var(--radius-lg);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
         cursor: pointer;
+        border: 1px solid var(--clr-primary-faint);
         transition: all 0.3s ease;
-        text-align: center;
-        border: 2px solid transparent;
       }
-
-      .publisher-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 30px rgba(220, 38, 38, 0.5);
-        border-color: #dc2626;
-      }
-
-      .publisher-card h3 {
-        font-size: 2rem;
-        margin-bottom: 1rem;
-      }
-
-      /* Footer */
-      footer {
-        background: linear-gradient(135deg, #1a1a1a 0%, #2d1b1b 100%);
-        padding: 3rem 2rem;
-        text-align: center;
-        margin-top: 4rem;
-        border-top: 2px solid rgba(220, 38, 38, 0.3);
-      }
-
-      footer p {
-        color: #999;
-        margin: 0.5rem 0;
-      }
-
-      /* Modal Styles */
-      .modal {
-        display: none;
-        position: fixed;
+      .publisher-card::before {
+        content: "";
+        position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.9);
-        z-index: 2000;
-        animation: fadeIn 0.3s ease;
+        background-image: radial-gradient(
+          var(--pub-color) 20%,
+          transparent 20%
+        );
+        background-size: 10px 10px;
+        background-position: 0 0;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 1;
       }
-
-      .modal.active {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      .publisher-card:hover::before {
+        opacity: 0.15;
       }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
+      .publisher-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--pub-color);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
       }
-
-      .modal-content {
-        background: linear-gradient(145deg, #1a1a1a 0%, #2d1515 100%);
-        border-radius: 16px;
-        max-width: 900px;
-        max-height: 90vh;
-        overflow-y: auto;
+      .publisher-content {
         position: relative;
-        margin: 2rem;
-        border: 2px solid rgba(220, 38, 38, 0.3);
-        box-shadow: 0 20px 60px rgba(220, 38, 38, 0.4);
-        animation: slideUp 0.3s ease;
+        z-index: 2;
+        pointer-events: none;
+      }
+      .pub-badge {
+        display: inline-block;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 0.3rem 0.8rem;
+        border-radius: var(--radius-pill);
+        font-size: 0.9rem;
+        margin-top: 1rem;
       }
 
-      @keyframes slideUp {
-        from {
-          transform: translateY(50px);
-          opacity: 0;
-        }
-        to {
-          transform: translateY(0);
-          opacity: 1;
-        }
+      /* Newsletter Section */
+      .newsletter-section {
+        background:
+          linear-gradient(135deg, var(--bg-surface) 0%, #1a1a1a 100%),
+          radial-gradient(
+            circle at 100% 0%,
+            rgba(220, 38, 38, 0.15) 0%,
+            transparent 50%
+          );
+        padding: 4rem 2rem;
+        border-radius: var(--radius-lg);
+        text-align: center;
+        border: 1px solid var(--clr-primary-faint);
       }
-
-      .modal-close {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        background: rgba(220, 38, 38, 0.8);
-        color: white;
-        border: none;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        cursor: pointer;
-        font-size: 1.5rem;
-        transition: all 0.3s ease;
-        z-index: 10;
-      }
-
-      .modal-close:hover {
-        background: #dc2626;
-        transform: rotate(90deg);
-      }
-
-      .modal-body {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-        padding: 2rem;
-      }
-
-      .modal-image {
-        position: relative;
-        overflow: hidden;
-        border-radius: 12px;
-      }
-
-      .modal-image img {
-        width: 100%;
-        height: auto;
-        transition: transform 0.5s ease;
-      }
-
-      .modal-image:hover img {
-        transform: scale(1.1);
-      }
-
-      .modal-details {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-      }
-
-      .modal-details h2 {
-        font-size: 2.5rem;
-        color: #fff;
-      }
-
-      .modal-meta {
+      .newsletter-form {
         display: flex;
         gap: 1rem;
+        justify-content: center;
+        max-width: 500px;
+        margin: 2rem auto 0;
         flex-wrap: wrap;
       }
-
-      .meta-badge {
-        background: rgba(220, 38, 38, 0.2);
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
-        font-size: 0.9rem;
-        border: 1px solid rgba(220, 38, 38, 0.3);
-      }
-
-      .modal-price {
-        font-size: 2.5rem;
-        color: #dc2626;
-        font-weight: bold;
-      }
-
-      .add-cart-btn {
-        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+      .newsletter-form input {
+        flex: 1;
+        padding: 1rem;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--clr-primary-border);
+        background: rgba(0, 0, 0, 0.5);
         color: white;
-        border: none;
-        padding: 1rem 2rem;
-        border-radius: 8px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        font-size: 1rem;
+        min-width: 250px;
       }
-
-      .add-cart-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
+      .shake {
+        animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
       }
-
-      .info-box {
-        background: rgba(0, 0, 0, 0.4);
-        padding: 1.5rem;
-        border-radius: 8px;
-        border: 1px solid rgba(220, 38, 38, 0.2);
-      }
-
-      .info-box h3 {
-        font-size: 1.3rem;
-        margin-bottom: 0.8rem;
-        color: #dc2626;
-      }
-
-      .info-box p {
-        color: #ccc;
-        line-height: 1.8;
-      }
-
-      /* Success Notification */
-      .notification {
-        position: fixed;
-        top: 100px;
-        right: 2rem;
-        background: linear-gradient(135deg, #059669 0%, #047857 100%);
-        color: white;
-        padding: 1rem 2rem;
-        border-radius: 8px;
-        box-shadow: 0 8px 20px rgba(5, 150, 105, 0.4);
-        z-index: 3000;
-        animation: slideInRight 0.3s ease;
-        display: none;
-      }
-
-      .notification.show {
-        display: block;
-      }
-
-      @keyframes slideInRight {
-        from {
-          transform: translateX(400px);
-          opacity: 0;
+      @keyframes shake {
+        10%,
+        90% {
+          transform: translate3d(-1px, 0, 0);
         }
-        to {
-          transform: translateX(0);
-          opacity: 1;
+        20%,
+        80% {
+          transform: translate3d(2px, 0, 0);
         }
-      }
-
-      /* Responsive */
-      @media (max-width: 768px) {
-        .nav-links {
-          gap: 1rem;
+        30%,
+        50%,
+        70% {
+          transform: translate3d(-4px, 0, 0);
         }
-
-        .carousel-content h2 {
-          font-size: 2rem;
-        }
-
-        .carousel-content p {
-          font-size: 1rem;
-        }
-
-        .modal-body {
-          grid-template-columns: 1fr;
-        }
-
-        .comic-grid {
-          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-          gap: 1rem;
+        40%,
+        60% {
+          transform: translate3d(4px, 0, 0);
         }
       }
     </style>
   </head>
   <body>
-    <!-- Navigation -->
-    <nav>
+    <!-- Navigation Template -->
+    <nav role="navigation" aria-label="Main navigation">
       <div class="nav-container">
-        <a href="index.html" class="logo">ComicVerse</a>
+        <a href="index.html" class="logo" aria-label="ComicVerse Home"
+          >ComicVerse</a
+        >
+        <button
+          class="hamburger"
+          onclick="toggleMobileNav()"
+          aria-label="Toggle navigation menu"
+          aria-expanded="false"
+        >
+          <span></span><span></span><span></span>
+        </button>
         <ul class="nav-links">
-          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html" class="active">Home</a></li>
           <li><a href="browse.html">Browse</a></li>
           <li>
-            <button class="cart-btn" onclick="window.location.href='cart.html'">
-              🛒 Cart
-              <span class="cart-badge" id="cartBadge">0</span>
+            <button
+              class="cart-btn"
+              onclick="window.location.href = 'cart.html'"
+            >
+              🛒 Cart <span class="cart-badge" id="cartBadge">0</span>
             </button>
           </li>
+        </ul>
+      </div>
+      <div class="mobile-nav-overlay" id="mobileNav">
+        <ul class="mobile-nav-links">
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="browse.html">Browse</a></li>
+          <li><a href="cart.html">🛒 Cart</a></li>
         </ul>
       </div>
     </nav>
 
     <!-- Hero Carousel -->
     <div class="hero-carousel">
+      <div class="hero-glow"></div>
       <div class="carousel-slide active">
         <img
           src="https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?w=1920&h=600&fit=crop"
           alt="Spider-Man"
+          loading="lazy"
         />
         <div class="carousel-overlay">
           <div class="carousel-content">
@@ -749,9 +410,9 @@
               determine the fate of millions.
             </p>
             <div class="carousel-buttons">
-              <a href="comic-detail.html?id=001" class="cta-button primary">
-                <span>📖</span> Read More
-              </a>
+              <a href="comic-detail.html?id=001" class="cta-button primary"
+                ><span>📖</span> Read More</a
+              >
             </div>
           </div>
         </div>
@@ -760,6 +421,7 @@
         <img
           src="https://images.unsplash.com/photo-1608889476561-6242cfdbf622?w=1920&h=600&fit=crop"
           alt="Batman"
+          loading="lazy"
         />
         <div class="carousel-overlay">
           <div class="carousel-content">
@@ -775,9 +437,9 @@
               save Gotham City one last time from a new generation of criminals.
             </p>
             <div class="carousel-buttons">
-              <a href="comic-detail.html?id=002" class="cta-button primary">
-                <span>📖</span> Read More
-              </a>
+              <a href="comic-detail.html?id=002" class="cta-button primary"
+                ><span>📖</span> Read More</a
+              >
             </div>
           </div>
         </div>
@@ -786,6 +448,7 @@
         <img
           src="https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1920&h=600&fit=crop"
           alt="Walking Dead"
+          loading="lazy"
         />
         <div class="carousel-overlay">
           <div class="carousel-content">
@@ -801,222 +464,311 @@
               civilization while facing threats both living and dead.
             </p>
             <div class="carousel-buttons">
-              <a href="comic-detail.html?id=003" class="cta-button primary">
-                <span>📖</span> Read More
-              </a>
+              <a href="comic-detail.html?id=003" class="cta-button primary"
+                ><span>📖</span> Read More</a
+              >
             </div>
           </div>
         </div>
       </div>
-      <button class="carousel-arrow left" onclick="changeSlide(-1)">‹</button>
-      <button class="carousel-arrow right" onclick="changeSlide(1)">›</button>
-
-      <!-- Carousel Indicators -->
+      <button
+        class="carousel-arrow left"
+        onclick="prevSlide()"
+        aria-label="Previous Slide"
+      >
+        ‹
+      </button>
+      <button
+        class="carousel-arrow right"
+        onclick="nextSlide()"
+        aria-label="Next Slide"
+      >
+        ›
+      </button>
       <div class="carousel-indicators">
-        <button class="indicator active" onclick="goToSlide(0)"></button>
-        <button class="indicator" onclick="goToSlide(1)"></button>
-        <button class="indicator" onclick="goToSlide(2)"></button>
+        <button
+          class="indicator active"
+          onclick="goToSlide(0)"
+          aria-label="Slide 1"
+        ></button>
+        <button
+          class="indicator"
+          onclick="goToSlide(1)"
+          aria-label="Slide 2"
+        ></button>
+        <button
+          class="indicator"
+          onclick="goToSlide(2)"
+          aria-label="Slide 3"
+        ></button>
       </div>
+      <div class="carousel-progress-bar"></div>
     </div>
 
+    <!-- Stats Section -->
+    <section class="section stats-section reveal">
+      <div class="stat-card">
+        <div class="stat-number" data-target="1200">0</div>
+        <div class="stat-label">Comics</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-target="50">0</div>
+        <div class="stat-label">Series</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-target="3">0</div>
+        <div class="stat-label">Publishers</div>
+      </div>
+    </section>
+
     <!-- New Releases Section -->
-    <section class="section">
+    <section class="section reveal">
       <h2 class="section-title">New Releases</h2>
-      <div class="comic-grid" id="newReleases"></div>
+      <div class="comic-grid" id="newReleasesGrid"></div>
     </section>
 
     <!-- Popular Series Section -->
-    <section
-      class="section"
-      style="
-        background: rgba(220, 38, 38, 0.05);
-        padding: 3rem 2rem;
-        border-radius: 12px;
-      "
-    >
+    <section class="section reveal">
       <h2 class="section-title">Popular Series</h2>
-      <div class="comic-grid" id="popularSeries"></div>
+      <div class="comic-grid" id="popularGrid"></div>
     </section>
 
     <!-- Publisher Spotlights -->
-    <section class="section">
-      <h2 class="section-title">Publisher Spotlights</h2>
-      <div class="publisher-grid">
-        <div
-          class="publisher-card"
-          onclick="window.location.href='browse.html?publisher=Marvel'"
-        >
-          <h3>Marvel</h3>
-          <p>Explore Marvel comics</p>
-        </div>
-        <div
-          class="publisher-card"
-          onclick="window.location.href='browse.html?publisher=DC'"
-        >
-          <h3>DC</h3>
-          <p>Explore DC comics</p>
-        </div>
-        <div
-          class="publisher-card"
-          onclick="window.location.href='browse.html?publisher=Image'"
-        >
-          <h3>Image</h3>
-          <p>Explore Image comics</p>
-        </div>
+    <section class="section reveal">
+      <h2 class="section-title">Explore Publishers</h2>
+      <div class="publisher-grid" id="publisherGrid"></div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="section newsletter-section reveal">
+      <div class="newsletter-content">
+        <h2>Join the ComicVerse</h2>
+        <p>Subscribe for updates on new releases and exclusive offers!</p>
+        <form id="newsletterForm" class="newsletter-form">
+          <input
+            type="email"
+            id="emailInput"
+            placeholder="Enter your email address"
+            required
+            aria-label="Email address"
+          />
+          <button type="submit" class="cta-button primary">Subscribe</button>
+        </form>
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer>
-      <p>&copy; 2024 ComicVerse Hub. All rights reserved.</p>
-      <p>A portfolio project showcasing modern web development</p>
+    <!-- Footer Template -->
+    <footer class="site-footer" role="contentinfo">
+      <div class="footer-divider"></div>
+      <div class="footer-container">
+        <div class="footer-col">
+          <h3 class="footer-logo">ComicVerse</h3>
+          <p>
+            Your ultimate destination for discovering and collecting comic books
+            from Marvel, DC, Image, and more.
+          </p>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="browse.html">Browse Comics</a></li>
+            <li><a href="cart.html">Shopping Cart</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Publishers</h3>
+          <ul class="footer-links">
+            <li><a href="browse.html?publisher=Marvel">Marvel</a></li>
+            <li><a href="browse.html?publisher=DC">DC Comics</a></li>
+            <li><a href="browse.html?publisher=Image">Image Comics</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 ComicVerse Hub. All rights reserved.</p>
+        <p>A portfolio project showcasing modern web development</p>
+      </div>
     </footer>
 
-    <!-- Success Notification -->
-    <div class="notification" id="notification">
-      ✓ Added to cart successfully!
-    </div>
+    <!-- Shared Elements -->
+    <div class="notification" id="notification"></div>
+    <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Scroll to top">
+      ↑
+    </button>
 
+    <!-- Scripts -->
     <script src="comics-data.js"></script>
+    <script src="shared.js"></script>
     <script>
-      // Carousel functionality
-      let currentSlide = 0;
-      const slides = document.querySelectorAll(".carousel-slide");
-      const indicators = document.querySelectorAll(".indicator");
-      let autoPlayTimer;
-      let progressAnimation;
+      document.addEventListener("DOMContentLoaded", () => {
+        // 1. Hero Carousel Logic
+        const slides = document.querySelectorAll(".carousel-slide");
+        const indicators = document.querySelectorAll(".indicator");
+        const progressBar = document.querySelector(".carousel-progress-bar");
+        const heroCarousel = document.querySelector(".hero-carousel");
+        let currentSlide = 0;
+        let slideInterval;
 
-      function changeSlide(direction) {
-        slides[currentSlide].classList.remove("active");
-        indicators[currentSlide].classList.remove("active");
+        window.showSlide = function (index) {
+          slides[currentSlide].classList.remove("active");
+          indicators[currentSlide].classList.remove("active");
 
-        currentSlide =
-          (currentSlide + direction + slides.length) % slides.length;
+          currentSlide = (index + slides.length) % slides.length;
 
-        slides[currentSlide].classList.add("active");
-        indicators[currentSlide].classList.add("active");
+          slides[currentSlide].classList.add("active");
+          indicators[currentSlide].classList.add("active");
 
-        resetAutoPlay();
+          resetProgress();
+        };
+
+        window.nextSlide = function () {
+          showSlide(currentSlide + 1);
+        };
+        window.prevSlide = function () {
+          showSlide(currentSlide - 1);
+        };
+        window.goToSlide = function (index) {
+          showSlide(index);
+        };
+
+        function resetProgress() {
+          progressBar.style.transition = "none";
+          progressBar.style.width = "0%";
+          // Force reflow
+          void progressBar.offsetWidth;
+          progressBar.style.transition = "width 5s linear";
+          progressBar.style.width = "100%";
+
+          clearInterval(slideInterval);
+          slideInterval = setInterval(nextSlide, 5000);
+        }
         resetProgress();
-      }
 
-      function goToSlide(index) {
-        slides[currentSlide].classList.remove("active");
-        indicators[currentSlide].classList.remove("active");
-
-        currentSlide = index;
-
-        slides[currentSlide].classList.add("active");
-        indicators[currentSlide].classList.add("active");
-
-        resetAutoPlay();
-        resetProgress();
-      }
-
-      function resetAutoPlay() {
-        clearInterval(autoPlayTimer);
-        autoPlayTimer = setInterval(() => changeSlide(1), 5000);
-      }
-
-      function resetProgress() {
-        // Progress bar removed - no longer needed
-      }
-
-      // Initialize auto advance carousel
-      autoPlayTimer = setInterval(() => changeSlide(1), 5000);
-
-      // Pause on hover
-      document
-        .querySelector(".hero-carousel")
-        .addEventListener("mouseenter", () => {
-          clearInterval(autoPlayTimer);
+        // Carousel Touch/Swipe
+        let touchStartX = 0;
+        let touchEndX = 0;
+        heroCarousel.addEventListener(
+          "touchstart",
+          (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+          },
+          { passive: true },
+        );
+        heroCarousel.addEventListener("touchend", (e) => {
+          touchEndX = e.changedTouches[0].screenX;
+          if (touchStartX - touchEndX > 50) nextSlide();
+          if (touchEndX - touchStartX > 50) prevSlide();
         });
 
-      document
-        .querySelector(".hero-carousel")
-        .addEventListener("mouseleave", () => {
-          resetAutoPlay();
+        // Carousel Keyboard
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "ArrowLeft") prevSlide();
+          if (e.key === "ArrowRight") nextSlide();
         });
 
-      // Load comics data
-      function loadComics() {
-        const newReleasesContainer = document.getElementById("newReleases");
-        const popularSeriesContainer = document.getElementById("popularSeries");
-
-        comicsData.slice(0, 4).forEach((comic) => {
-          newReleasesContainer.appendChild(createComicCard(comic));
+        // Carousel Glow Effect
+        heroCarousel.addEventListener("mousemove", (e) => {
+          const rect = heroCarousel.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          heroCarousel.style.setProperty("--mouse-x", `${x}px`);
+          heroCarousel.style.setProperty("--mouse-y", `${y}px`);
         });
 
-        comicsData.slice(4, 8).forEach((comic) => {
-          popularSeriesContainer.appendChild(createComicCard(comic));
+        // 2. Stats Counter
+        const statsObserver = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting) {
+            document.querySelectorAll(".stat-number").forEach((el) => {
+              const target = +el.getAttribute("data-target");
+              const inc = target / 50;
+              let count = 0;
+              const updateCount = () => {
+                count += inc;
+                if (count < target) {
+                  el.innerText = Math.ceil(count) + (target > 10 ? "+" : "");
+                  requestAnimationFrame(updateCount);
+                } else {
+                  el.innerText = target + (target > 10 ? "+" : "");
+                }
+              };
+              updateCount();
+            });
+            statsObserver.disconnect();
+          }
         });
-      }
+        const statsSection = document.querySelector(".stats-section");
+        if (statsSection) statsObserver.observe(statsSection);
 
-      function createComicCard(comic) {
-        const card = document.createElement("div");
-        card.className = "comic-card";
-        card.onclick = () =>
-          (window.location.href = `comic-detail.html?id=${comic.id}`);
-
-        card.innerHTML = `
-                <div class="comic-card-image">
-                    <img src="${comic.cover}" alt="${comic.title}">
-                    <div class="comic-rating">⭐ ${comic.rating}</div>
-                </div>
-                <div class="comic-card-content">
-                    <h3>${comic.title}</h3>
-                    <p class="comic-publisher">${comic.publisher}</p>
-                    <p class="comic-price">${comic.price}</p>
-                </div>
-            `;
-
-        return card;
-      }
-
-      // Cart functionality
-      function getCart() {
-        return JSON.parse(localStorage.getItem("cart") || "[]");
-      }
-
-      function saveCart(cart) {
-        localStorage.setItem("cart", JSON.stringify(cart));
-        updateCartBadge();
-      }
-
-      function addToCart(comicId) {
-        const comic = comicsData.find((c) => c.id === comicId);
-        if (!comic) return;
-
-        let cart = getCart();
-        const existingItem = cart.find((item) => item.id === comicId);
-
-        if (existingItem) {
-          existingItem.quantity += 1;
-        } else {
-          cart.push({ ...comic, quantity: 1 });
+        // 4. Publisher Spotlights Generator
+        const publishers = [
+          { name: "Marvel", color: "#dc2626" },
+          { name: "DC", color: "#3b82f6" },
+          { name: "Image", color: "#10b981" },
+        ];
+        const pubGrid = document.querySelector("#publisherGrid");
+        if (pubGrid && typeof comicsData !== "undefined") {
+          publishers.forEach((pub) => {
+            const count = comicsData.filter(
+              (c) => c.publisher === pub.name,
+            ).length;
+            pubGrid.innerHTML += `
+            <div class="publisher-card" style="--pub-color: ${pub.color}" onclick="window.location.href='browse.html?publisher=${pub.name}'" role="button" tabindex="0">
+              <div class="publisher-content">
+                <h3>${pub.name}</h3>
+                <div class="pub-badge">${count} Comics</div>
+              </div>
+            </div>
+          `;
+          });
         }
 
-        saveCart(cart);
-        showNotification();
-      }
+        // 5. Populate Grids (New Releases & Popular)
+        if (
+          typeof createComicCard === "function" &&
+          typeof comicsData !== "undefined"
+        ) {
+          const newGrid = document.getElementById("newReleasesGrid");
+          if (newGrid) {
+            comicsData.slice(0, 4).forEach((comic, idx) => {
+              newGrid.appendChild(
+                createComicCard(comic, { animationDelay: idx * 100 }),
+              );
+            });
+          }
+          const popGrid = document.getElementById("popularGrid");
+          if (popGrid) {
+            const popular = [...comicsData]
+              .sort((a, b) => b.rating - a.rating)
+              .slice(0, 4);
+            popular.forEach((comic, idx) => {
+              popGrid.appendChild(
+                createComicCard(comic, { animationDelay: idx * 100 }),
+              );
+            });
+          }
+        }
 
-      function updateCartBadge() {
-        const cart = getCart();
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        document.getElementById("cartBadge").textContent = totalItems;
-      }
-
-      function showNotification() {
-        const notification = document.getElementById("notification");
-        notification.classList.add("show");
-        setTimeout(() => {
-          notification.classList.remove("show");
-        }, 3000);
-      }
-
-      // Initialize
-      loadComics();
-      updateCartBadge();
+        // 6. Newsletter Form Validation
+        const nlForm = document.getElementById("newsletterForm");
+        if (nlForm) {
+          nlForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const email = document.getElementById("emailInput").value;
+            if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+              if (typeof showNotification === "function") {
+                showNotification("Subscribed successfully!");
+              } else {
+                alert("Subscribed successfully!");
+              }
+              nlForm.reset();
+            } else {
+              nlForm.classList.add("shake");
+              setTimeout(() => nlForm.classList.remove("shake"), 500);
+            }
+          });
+        }
+      });
     </script>
   </body>
 </html>

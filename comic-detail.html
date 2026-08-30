@@ -1,654 +1,564 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Comic Details - ComicVerse Hub</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comic Details - ComicVerse Hub</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Detail Layout */
+    .detail-container {
+      max-width: 1400px;
+      margin: 0 auto 4rem;
+      padding: 0 2rem;
+    }
 
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Oxygen, Ubuntu, Cantarell, sans-serif;
-        background: #0a0a0a;
-        color: #fff;
-        line-height: 1.6;
-      }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 500px 1fr;
+      gap: 4rem;
+      margin-bottom: 3rem;
+      align-items: start;
+    }
 
-      /* Navigation */
-      nav {
-        background: linear-gradient(135deg, #1a1a1a 0%, #2d1b1b 100%);
-        padding: 1rem 2rem;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
-      }
+    .detail-image {
+      position: sticky;
+      top: 100px;
+      border-radius: var(--radius-xl, 16px);
+      overflow: hidden;
+      box-shadow: 0 20px 60px var(--clr-primary-glow, rgba(220, 38, 38, 0.4));
+      background: var(--bg-surface, #1a1a1a);
+      cursor: zoom-in;
+    }
 
-      .nav-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
+    .detail-image img {
+      width: 100%;
+      height: auto;
+      max-height: 700px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
 
-      .logo {
-        font-size: 1.8rem;
-        font-weight: 900;
-        background: linear-gradient(135deg, #dc2626 0%, #3b82f6 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-decoration: none;
-        letter-spacing: 1px;
-      }
+    .detail-image:hover img {
+      transform: scale(1.05);
+    }
 
-      .nav-links {
-        display: flex;
-        gap: 2rem;
-        list-style: none;
-        align-items: center;
-      }
+    .detail-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1.8rem;
+    }
 
-      .nav-links a {
-        color: #fff;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        font-weight: 500;
-        position: relative;
-      }
+    .detail-header h1 {
+      font-size: 2.8rem;
+      margin-bottom: 0.8rem;
+      background: linear-gradient(135deg, #fff 0%, var(--clr-primary, #dc2626) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+    }
 
-      .nav-links a:hover {
-        color: #dc2626;
-      }
+    .detail-character {
+      color: var(--text-secondary, #999);
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
 
-      .nav-links a::after {
-        content: "";
-        position: absolute;
-        bottom: -5px;
-        left: 0;
-        width: 0;
-        height: 2px;
-        background: #dc2626;
-        transition: width 0.3s ease;
-      }
+    .detail-price {
+      font-size: 2.5rem;
+      color: var(--clr-primary, #dc2626);
+      font-weight: bold;
+    }
 
-      .nav-links a:hover::after {
-        width: 100%;
-      }
+    .quantity-section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
 
-      .cart-btn {
-        position: relative;
-        background: #dc2626;
-        color: white;
-        border: none;
-        padding: 0.6rem 1.2rem;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.3s ease;
-      }
+    .quantity-label {
+      color: var(--text-secondary, #999);
+      font-size: 1.1rem;
+    }
 
-      .cart-btn:hover {
-        background: #b91c1c;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
-      }
+    /* Lightbox Styles */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--bg-overlay, rgba(0,0,0,0.9));
+      z-index: 3000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(5px);
+    }
+    .lightbox.active {
+      display: flex;
+    }
+    .lightbox-content {
+      max-width: 90%;
+      max-height: 90vh;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+      cursor: zoom-in;
+      border-radius: var(--radius-lg, 12px);
+      box-shadow: 0 0 40px rgba(0,0,0,0.5);
+    }
+    .lightbox-content.zoomed {
+      transform: scale(1.5);
+      cursor: zoom-out;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px; right: 20px;
+      background: rgba(220, 38, 38, 0.8);
+      color: white;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s ease;
+    }
+    .lightbox-close:hover {
+      background: var(--clr-primary, #dc2626);
+      transform: rotate(90deg);
+    }
 
-      .cart-badge {
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        background: #fbbf24;
-        color: #000;
-        border-radius: 50%;
-        width: 22px;
-        height: 22px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.75rem;
-        font-weight: bold;
-      }
+    /* Related Comics Section */
+    .related-section {
+      margin-top: 4rem;
+    }
+    .related-grid {
+      display: flex;
+      gap: 1.5rem;
+      overflow-x: auto;
+      padding-bottom: 1rem;
+      scrollbar-width: thin;
+    }
+    .related-grid::-webkit-scrollbar {
+      height: 8px;
+    }
+    .related-grid::-webkit-scrollbar-track {
+      background: var(--bg-body, #0a0a0a);
+    }
+    .related-grid::-webkit-scrollbar-thumb {
+      background: var(--clr-primary, #dc2626);
+      border-radius: 4px;
+    }
+    .related-grid .comic-card {
+      min-width: 250px;
+      flex: 0 0 auto;
+    }
 
-      /* Back Button */
-      .back-button {
-        max-width: 1200px;
-        margin: 2rem auto;
-        padding: 0 2rem;
-      }
+    /* Details Grid for Tab */
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+    .details-grid p {
+      margin-bottom: 0.5rem;
+    }
+    .details-grid strong {
+      display: block;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary, #999);
+      margin-bottom: 0.25rem;
+    }
+    .details-grid span {
+      font-size: 1.1rem;
+      color: var(--text-primary, #fff);
+    }
 
-      .back-btn {
-        background: rgba(220, 38, 38, 0.2);
-        color: white;
-        border: 1px solid rgba(220, 38, 38, 0.4);
-        padding: 0.8rem 1.5rem;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        text-decoration: none;
-      }
-
-      .back-btn:hover {
-        background: rgba(220, 38, 38, 0.4);
-        border-color: #dc2626;
-        transform: translateX(-5px);
-      }
-
-      /* Comic Detail Container */
-      .detail-container {
-        max-width: 1400px;
-        margin: 0 auto 4rem;
-        padding: 0 2rem;
-      }
-
+    /* Responsive */
+    @media (max-width: 1200px) {
       .detail-grid {
-        display: grid;
-        grid-template-columns: 500px 1fr;
-        gap: 4rem;
-        margin-bottom: 3rem;
-        align-items: start;
+        grid-template-columns: 400px 1fr;
+        gap: 3rem;
       }
+    }
 
+    @media (max-width: 968px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
       .detail-image {
-        position: sticky;
-        top: 100px;
-        overflow: hidden;
-        border-radius: 16px;
-        box-shadow: 0 20px 60px rgba(220, 38, 38, 0.4);
-        background: #1a1a1a;
+        position: relative;
+        top: 0;
+        max-width: 500px;
+        margin: 0 auto;
       }
-
-      .detail-image img {
-        width: 100%;
-        height: auto;
-        max-height: 700px;
-        object-fit: cover;
-        display: block;
-        transition: transform 0.5s ease;
-      }
-
-      .detail-image:hover img {
-        transform: scale(1.05);
-      }
-
-      .detail-info {
-        display: flex;
-        flex-direction: column;
-        gap: 1.8rem;
-      }
-
       .detail-header h1 {
-        font-size: 2.8rem;
-        margin-bottom: 0.8rem;
-        background: linear-gradient(135deg, #fff 0%, #dc2626 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        line-height: 1.2;
+        font-size: 2.2rem;
       }
-
-      .detail-character {
-        color: #999;
-        font-size: 1.2rem;
-        margin-bottom: 1.5rem;
-      }
-
-      .detail-meta {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-      }
-
-      .meta-badge {
-        background: rgba(220, 38, 38, 0.2);
-        padding: 0.5rem 1rem;
-        border-radius: 8px;
-        font-size: 0.95rem;
-        border: 1px solid rgba(220, 38, 38, 0.3);
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
       .detail-price {
-        font-size: 2.5rem;
-        color: #dc2626;
-        font-weight: bold;
+        font-size: 2rem;
       }
+    }
 
-      .quantity-section {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
+    @media (max-width: 640px) {
+      .detail-container {
+        padding: 0 1rem;
       }
-
-      .quantity-label {
-        color: #999;
-        font-size: 1.1rem;
+      .detail-header h1 {
+        font-size: 1.8rem;
       }
-
-      .quantity-controls {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        background: rgba(0, 0, 0, 0.4);
-        padding: 0.5rem 1.5rem;
-        border-radius: 8px;
-        border: 1px solid rgba(220, 38, 38, 0.3);
+      .details-grid {
+        grid-template-columns: 1fr;
       }
+    }
+  </style>
+</head>
+<body>
 
-      .quantity-btn {
-        background: #dc2626;
-        color: white;
-        border: none;
-        width: 36px;
-        height: 36px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 1.3rem;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .quantity-btn:hover {
-        background: #b91c1c;
-        transform: scale(1.1);
-      }
-
-      .quantity-display {
-        font-size: 1.3rem;
-        font-weight: bold;
-        min-width: 40px;
-        text-align: center;
-      }
-
-      .add-cart-btn {
-        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-        color: white;
-        border: none;
-        padding: 1rem 2rem;
-        border-radius: 8px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-      }
-
-      .add-cart-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
-      }
-
-      .info-section {
-        background: linear-gradient(145deg, #1a1a1a 0%, #2d1515 100%);
-        padding: 1.8rem;
-        border-radius: 12px;
-        border: 1px solid rgba(220, 38, 38, 0.2);
-        margin-bottom: 1.5rem;
-      }
-
-      .info-section h2 {
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-        color: #dc2626;
-      }
-
-      .info-section p {
-        color: #ccc;
-        line-height: 1.8;
-        font-size: 1rem;
-      }
-
-      .additional-info {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-      }
-
-      .info-card {
-        background: rgba(0, 0, 0, 0.4);
-        padding: 1.5rem;
-        border-radius: 8px;
-        border: 1px solid rgba(220, 38, 38, 0.2);
-      }
-
-      .info-card h3 {
-        color: #dc2626;
-        margin-bottom: 0.5rem;
-        font-size: 1.1rem;
-      }
-
-      .info-card p {
-        color: #999;
-      }
-
-      /* Success Notification */
-      .notification {
-        position: fixed;
-        top: 100px;
-        right: 2rem;
-        background: linear-gradient(135deg, #059669 0%, #047857 100%);
-        color: white;
-        padding: 1rem 2rem;
-        border-radius: 8px;
-        box-shadow: 0 8px 20px rgba(5, 150, 105, 0.4);
-        z-index: 3000;
-        animation: slideInRight 0.3s ease;
-        display: none;
-        font-weight: 600;
-      }
-
-      .notification.show {
-        display: block;
-      }
-
-      @keyframes slideInRight {
-        from {
-          transform: translateX(400px);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(0);
-          opacity: 1;
-        }
-      }
-
-      /* Footer */
-      footer {
-        background: linear-gradient(135deg, #1a1a1a 0%, #2d1b1b 100%);
-        padding: 3rem 2rem;
-        text-align: center;
-        margin-top: 4rem;
-        border-top: 2px solid rgba(220, 38, 38, 0.3);
-      }
-
-      footer p {
-        color: #999;
-        margin: 0.5rem 0;
-      }
-
-      /* Responsive */
-      @media (max-width: 1200px) {
-        .detail-grid {
-          grid-template-columns: 400px 1fr;
-          gap: 3rem;
-        }
-      }
-
-      @media (max-width: 968px) {
-        .detail-grid {
-          grid-template-columns: 1fr;
-          gap: 2rem;
-        }
-
-        .detail-image {
-          position: relative;
-          top: 0;
-          max-width: 500px;
-          margin: 0 auto;
-        }
-
-        .detail-header h1 {
-          font-size: 2.2rem;
-        }
-
-        .detail-price {
-          font-size: 2rem;
-        }
-
-        .back-button {
-          margin: 1rem auto;
-        }
-      }
-
-      @media (max-width: 640px) {
-        .detail-container {
-          padding: 0 1rem;
-        }
-
-        .detail-header h1 {
-          font-size: 1.8rem;
-        }
-
-        .meta-badge {
-          font-size: 0.85rem;
-          padding: 0.5rem 0.8rem;
-        }
-
-        .add-cart-btn {
-          padding: 1rem 1.5rem;
-          font-size: 1rem;
-        }
-
-        .additional-info {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Navigation -->
-    <nav>
-      <div class="nav-container">
-        <a href="index.html" class="logo">ComicVerse</a>
-        <ul class="nav-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="browse.html">Browse</a></li>
-          <li>
-            <button class="cart-btn" onclick="window.location.href='cart.html'">
-              🛒 Cart
-              <span class="cart-badge" id="cartBadge">0</span>
-            </button>
-          </li>
-        </ul>
-      </div>
-    </nav>
-
-    <!-- Back Button -->
-    <div class="back-button">
-      <a href="javascript:history.back()" class="back-btn"> ← Back </a>
+  <!-- Navigation -->
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-container">
+      <a href="index.html" class="logo" aria-label="ComicVerse Home">ComicVerse</a>
+      <button class="hamburger" onclick="toggleMobileNav()" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="browse.html" class="active">Browse</a></li>
+        <li>
+          <button class="cart-btn" onclick="window.location.href='cart.html'">
+            🛒 Cart <span class="cart-badge" id="cartBadge">0</span>
+          </button>
+        </li>
+      </ul>
     </div>
+    <div class="mobile-nav-overlay" id="mobileNav">
+      <ul class="mobile-nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="browse.html" class="active">Browse</a></li>
+        <li><a href="cart.html">🛒 Cart</a></li>
+      </ul>
+    </div>
+  </nav>
 
-    <!-- Comic Detail Container -->
-    <div class="detail-container">
-      <div class="detail-grid">
-        <div class="detail-image" id="comicImage">
-          <!-- Image will be loaded by JavaScript -->
+  <!-- Breadcrumb and Back Button -->
+  <div class="section" style="margin-top: 2rem; margin-bottom: 0;">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="separator">/</span>
+      <a href="browse.html">Browse</a>
+      <span class="separator">/</span>
+      <span class="current" id="breadcrumbTitle"></span>
+    </div>
+    <div style="margin-top: 1.5rem;">
+      <button onclick="goBack()" class="back-btn">← Back</button>
+    </div>
+  </div>
+
+  <!-- Comic Detail Container -->
+  <div class="detail-container">
+    <div class="detail-grid">
+      <!-- Image (Sticky, Lightbox Trigger) -->
+      <div class="detail-image" id="comicImage" onclick="openLightbox()" title="Click to view larger">
+        <!-- Loaded by JS -->
+      </div>
+
+      <!-- Info Area -->
+      <div class="detail-info">
+        <div class="detail-header">
+          <h1 id="comicTitle"></h1>
+          <p class="detail-character" id="comicCharacter"></p>
         </div>
 
-        <div class="detail-info">
-          <div class="detail-header">
-            <h1 id="comicTitle"></h1>
-            <p class="detail-character" id="comicCharacter"></p>
+        <div id="comicRatingContainer"></div>
+
+        <div class="detail-meta" id="comicMeta">
+          <!-- Loaded by JS -->
+        </div>
+
+        <div class="detail-price" id="comicPrice"></div>
+
+        <div class="quantity-section">
+          <span class="quantity-label">Quantity:</span>
+          <div class="quantity-controls">
+            <button class="quantity-btn" onclick="updateQuantity(-1)">−</button>
+            <span class="quantity-display" id="quantity">1</span>
+            <button class="quantity-btn" onclick="updateQuantity(1)">+</button>
           </div>
+        </div>
 
-          <div class="detail-meta" id="comicMeta">
-            <!-- Meta badges will be loaded by JavaScript -->
+        <button id="addBtn" class="add-cart-btn" onclick="enhancedAddToCart()">
+          🛒 Add to Cart
+        </button>
+
+        <!-- Tabbed Content -->
+        <div style="margin-top: 1rem;">
+          <div class="tabs">
+            <button class="tab active" onclick="switchTab('synopsis')">Synopsis</button>
+            <button class="tab" onclick="switchTab('creators')">Creators</button>
+            <button class="tab" onclick="switchTab('details')">Details</button>
           </div>
-
-          <div class="detail-price" id="comicPrice"></div>
-
-          <div class="quantity-section">
-            <span class="quantity-label">Quantity:</span>
-            <div class="quantity-controls">
-              <button class="quantity-btn" onclick="updateQuantity(-1)">
-                −
-              </button>
-              <span class="quantity-display" id="quantity">1</span>
-              <button class="quantity-btn" onclick="updateQuantity(1)">
-                +
-              </button>
+          <div id="synopsis" class="tab-content active" style="padding-top: 1.5rem;">
+            <p id="tabSynopsis" style="color: var(--text-muted); line-height: 1.8;"></p>
+          </div>
+          <div id="creators" class="tab-content" style="padding-top: 1.5rem;">
+            <p id="tabCreators" style="color: var(--text-muted); line-height: 1.8;"></p>
+          </div>
+          <div id="details" class="tab-content" style="padding-top: 1.5rem;">
+            <div class="details-grid">
+              <div>
+                <strong>Release Date</strong>
+                <span id="detailReleaseDate"></span>
+              </div>
+              <div>
+                <strong>Publisher</strong>
+                <span id="detailPublisher"></span>
+              </div>
+              <div>
+                <strong>Genre</strong>
+                <span id="detailGenre"></span>
+              </div>
+              <div>
+                <strong>Rating</strong>
+                <span id="detailRating"></span>
+              </div>
             </div>
           </div>
-
-          <button class="add-cart-btn" onclick="addToCart()">
-            🛒 Add to Cart
-          </button>
-
-          <div class="info-section">
-            <h2>Synopsis</h2>
-            <p id="comicSynopsis"></p>
-          </div>
-
-          <div class="info-section">
-            <h2>Creators</h2>
-            <p id="comicCreators"></p>
-          </div>
-        </div>
-      </div>
-
-      <div class="additional-info">
-        <div class="info-card">
-          <h3>Release Date</h3>
-          <p id="comicReleaseDate"></p>
-        </div>
-        <div class="info-card">
-          <h3>Publisher</h3>
-          <p id="comicPublisher"></p>
-        </div>
-        <div class="info-card">
-          <h3>Genre</h3>
-          <p id="comicGenre"></p>
         </div>
       </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
+    <!-- Related Comics Section -->
+    <div class="related-section">
+      <h2 class="section-title">You May Also Like</h2>
+      <div class="related-grid" id="relatedGrid">
+        <!-- Loaded by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-divider"></div>
+    <div class="footer-container">
+      <div class="footer-col">
+        <h3 class="footer-logo">ComicVerse</h3>
+        <p>Your ultimate destination for discovering and collecting comic books from Marvel, DC, Image, and more.</p>
+      </div>
+      <div class="footer-col">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="browse.html">Browse Comics</a></li>
+          <li><a href="cart.html">Shopping Cart</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Publishers</h3>
+        <ul class="footer-links">
+          <li><a href="browse.html?publisher=Marvel">Marvel</a></li>
+          <li><a href="browse.html?publisher=DC">DC Comics</a></li>
+          <li><a href="browse.html?publisher=Image">Image Comics</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
       <p>&copy; 2024 ComicVerse Hub. All rights reserved.</p>
       <p>A portfolio project showcasing modern web development</p>
-    </footer>
-
-    <!-- Success Notification -->
-    <div class="notification" id="notification">
-      ✓ Added to cart successfully!
     </div>
+  </footer>
 
-    <script src="comics-data.js"></script>
-    <script>
-      let currentQuantity = 1;
-      let currentComic = null;
+  <!-- Lightbox Overlay -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" onclick="closeLightbox(event)" aria-label="Close Lightbox">×</button>
+    <img class="lightbox-content" id="lightboxImg" src="" alt="" onclick="toggleZoom(event)">
+  </div>
 
-      // Load comic details on page load
-      window.addEventListener("DOMContentLoaded", () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const comicId = urlParams.get("id");
+  <!-- Shared Elements -->
+  <div class="notification" id="notification"></div>
+  <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Scroll to top">↑</button>
 
-        if (comicId) {
-          loadComicDetails(comicId);
-        } else {
-          window.location.href = "browse.html";
-        }
+  <!-- Scripts -->
+  <script src="comics-data.js"></script>
+  <script src="shared.js"></script>
+  <script>
+    let currentQuantity = 1;
+    let currentComic = null;
 
-        updateCartBadge();
+    window.addEventListener("DOMContentLoaded", () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const comicId = urlParams.get("id");
+
+      if (comicId) {
+        loadComicDetails(comicId);
+      } else {
+        window.location.href = "browse.html";
+      }
+    });
+
+    function goBack() {
+      if (history.length > 1) {
+        history.back();
+      } else {
+        window.location.href = 'browse.html';
+      }
+    }
+
+    function loadComicDetails(comicId) {
+      currentComic = comicsData.find((c) => c.id === comicId);
+
+      if (!currentComic) {
+        window.location.href = "browse.html";
+        return;
+      }
+
+      document.title = `${currentComic.title} - ComicVerse Hub`;
+
+      // Update breadcrumb
+      document.getElementById("breadcrumbTitle").textContent = currentComic.title;
+
+      // Load main image
+      document.getElementById("comicImage").innerHTML = `
+        <img src="${currentComic.cover}" alt="${currentComic.title}" loading="lazy">
+      `;
+      // Load lightbox image
+      document.getElementById("lightboxImg").src = currentComic.cover;
+      document.getElementById("lightboxImg").alt = currentComic.title;
+
+      // Basic info
+      document.getElementById("comicTitle").textContent = currentComic.title;
+      document.getElementById("comicCharacter").textContent = currentComic.character;
+      document.getElementById("comicPrice").textContent = `$${currentComic.price.toFixed(2)}`;
+
+      // Rating (using shared.js function)
+      document.getElementById("comicRatingContainer").innerHTML = renderStarRating(currentComic.rating);
+
+      // Meta badges
+      document.getElementById("comicMeta").innerHTML = `
+        <span class="meta-badge">${currentComic.publisher}</span>
+        <span class="meta-badge">${currentComic.genre}</span>
+      `;
+
+      // Tabs info
+      document.getElementById("tabSynopsis").textContent = currentComic.synopsis;
+      document.getElementById("tabCreators").textContent = currentComic.creators;
+
+      // Detail tab info
+      const releaseDate = new Date(currentComic.releaseDate).toLocaleDateString("en-US", {
+        year: "numeric", month: "long", day: "numeric"
       });
+      document.getElementById("detailReleaseDate").textContent = releaseDate;
+      document.getElementById("detailPublisher").textContent = currentComic.publisher;
+      document.getElementById("detailGenre").textContent = currentComic.genre;
+      document.getElementById("detailRating").textContent = currentComic.rating;
 
-      function loadComicDetails(comicId) {
-        currentComic = comicsData.find((c) => c.id === comicId);
+      loadRelatedComics();
+    }
 
-        if (!currentComic) {
-          window.location.href = "browse.html";
-          return;
+    function updateQuantity(delta) {
+      currentQuantity = Math.max(1, currentQuantity + delta);
+      document.getElementById("quantity").textContent = currentQuantity;
+    }
+
+    function enhancedAddToCart() {
+      if (!currentComic) return;
+
+      // 1. Use shared.js logic to add to cart 
+      addToCart(currentComic.id); 
+      
+      // 2. Since addToCart() always adds 1, apply any remaining quantity manually
+      if (currentQuantity > 1) {
+        let cart = getCart();
+        const item = cart.find(i => i.id === currentComic.id);
+        if (item) {
+          item.quantity += (currentQuantity - 1);
+          saveCart(cart); // updates badge & localStorage
         }
-
-        // Update page title
-        document.title = `${currentComic.title} - ComicVerse Hub`;
-
-        // Load image
-        document.getElementById("comicImage").innerHTML = `
-                <img src="${currentComic.cover}" alt="${currentComic.title}">
-            `;
-
-        // Load basic info
-        document.getElementById("comicTitle").textContent = currentComic.title;
-        document.getElementById("comicCharacter").textContent =
-          currentComic.character;
-        document.getElementById(
-          "comicPrice"
-        ).textContent = `$${currentComic.price.toFixed(2)}`;
-
-        // Load meta badges
-        document.getElementById("comicMeta").innerHTML = `
-                <span class="meta-badge">⭐ ${currentComic.rating}</span>
-                <span class="meta-badge">${currentComic.publisher}</span>
-                <span class="meta-badge">${currentComic.genre}</span>
-            `;
-
-        // Load descriptions
-        document.getElementById("comicSynopsis").textContent =
-          currentComic.synopsis;
-        document.getElementById("comicCreators").textContent =
-          currentComic.creators;
-
-        // Load additional info
-        document.getElementById("comicReleaseDate").textContent = new Date(
-          currentComic.releaseDate
-        ).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
-        document.getElementById("comicPublisher").textContent =
-          currentComic.publisher;
-        document.getElementById("comicGenre").textContent = currentComic.genre;
       }
 
-      function updateQuantity(delta) {
-        currentQuantity = Math.max(1, currentQuantity + delta);
-        document.getElementById("quantity").textContent = currentQuantity;
+      // 3. UI Animation for the button
+      const btn = document.getElementById("addBtn");
+      btn.classList.add("added");
+      btn.innerHTML = "✓ Added!";
+      
+      // Re-trigger ripple
+      btn.classList.remove("ripple");
+      void btn.offsetWidth; // Force reflow
+      btn.classList.add("ripple");
+
+      // Revert after 1.5s
+      setTimeout(() => {
+        btn.classList.remove("added");
+        btn.classList.remove("ripple");
+        btn.innerHTML = "🛒 Add to Cart";
+      }, 1500);
+
+      // Reset quantity
+      currentQuantity = 1;
+      document.getElementById("quantity").textContent = currentQuantity;
+    }
+
+    // Tab switching
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      // Find the button with the matching onclick attribute to set active
+      document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    // Lightbox handling
+    function openLightbox() {
+      document.getElementById("lightbox").classList.add("active");
+    }
+    
+    function closeLightbox(e) {
+      if (e) e.stopPropagation();
+      document.getElementById("lightbox").classList.remove("active");
+      document.getElementById("lightboxImg").classList.remove("zoomed");
+    }
+    
+    function toggleZoom(e) {
+      e.stopPropagation();
+      document.getElementById("lightboxImg").classList.toggle("zoomed");
+    }
+
+    document.getElementById("lightbox").addEventListener('click', (e) => {
+      // Close if clicking the background, not the image
+      if(e.target.id === 'lightbox') closeLightbox();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape') closeLightbox();
+    });
+
+    // Load Related Comics
+    function loadRelatedComics() {
+      // Priority 1: Same publisher
+      let related = comicsData.filter(c => c.publisher === currentComic.publisher && c.id !== currentComic.id);
+      
+      // Priority 2: Fill remaining with same genre
+      if (related.length < 4) {
+        const moreRelated = comicsData.filter(c => c.genre === currentComic.genre && c.id !== currentComic.id && !related.includes(c));
+        related = related.concat(moreRelated);
       }
-
-      function addToCart() {
-        if (!currentComic) return;
-
-        let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-        const existingItem = cart.find((item) => item.id === currentComic.id);
-
-        if (existingItem) {
-          existingItem.quantity += currentQuantity;
-        } else {
-          cart.push({ ...currentComic, quantity: currentQuantity });
-        }
-
-        localStorage.setItem("cart", JSON.stringify(cart));
-        updateCartBadge();
-        showNotification();
-
-        // Reset quantity
-        currentQuantity = 1;
-        document.getElementById("quantity").textContent = currentQuantity;
-      }
-
-      function updateCartBadge() {
-        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        document.getElementById("cartBadge").textContent = totalItems;
-      }
-
-      function showNotification() {
-        const notification = document.getElementById("notification");
-        notification.classList.add("show");
-        setTimeout(() => {
-          notification.classList.remove("show");
-        }, 3000);
-      }
-    </script>
-  </body>
+      
+      // Limit to 4
+      related = related.slice(0, 4);
+      
+      const container = document.getElementById("relatedGrid");
+      container.innerHTML = '';
+      
+      related.forEach((comic, index) => {
+        // createComicCard uses shared.js
+        const card = createComicCard(comic, { showQuickAdd: true, animationDelay: index * 100 });
+        container.appendChild(card);
+      });
+    }
+  </script>
+</body>
 </html>
